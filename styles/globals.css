@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide spinner buttons on number inputs */
+
+@font-face {
+    font-family: "'Manrope', sans-serif";
+    src: url('/frontend/styles/scss/fonts/Manrope/Manrope-Light.eot');
+    font-weight: normal;
+    font-style: normal;
+}
