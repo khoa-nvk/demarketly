@@ -18,7 +18,7 @@ export default function HeaderIndex() {
             <img className="logo-main" src="/logo.png"></img>
           </a>
         </div>
-        <div className="col-lg-6 col-6 text-left menu-main d-flex">
+        <div className="col-lg-6 col-6 text-left menu-main d-flex justify-content-end">
           <Link href='/'>
             <div className={path == '/'? "mr-4 menu-item active": "mr-4 menu-item"} >
               Home
@@ -30,12 +30,12 @@ export default function HeaderIndex() {
             </div>
           </Link>
           <Link href='/dashboard'>
-            <div className={path == '/about'? "mr-4 menu-item active": "mr-4 menu-item"}>
+            <div className={"mr-4 menu-item"}>
               Buyer Dashboard
             </div>
           </Link>
           <Link href='/seller/catalog/products'>
-            <div className={path == '/about'? "mr-4 menu-item active": "mr-4 menu-item"}>
+            <div className={"mr-4 menu-item"}>
               Seller Dashboard
             </div>
           </Link>

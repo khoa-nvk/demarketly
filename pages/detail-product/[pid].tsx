@@ -24,6 +24,8 @@ const Page: NextPageWithLayout = () => {
   const [alreadyComment, setAlreadyComment] = useState(false)
   const [isPurchasedProduct, setIsPurchasedProduct] = useState(false)
 
+  const [loadingData, setLoadingData] = useState(false)
+
   const { pid } = router.query
   console.log(pid)
 
@@ -201,10 +203,13 @@ const Page: NextPageWithLayout = () => {
 
     try {
 
+      setLoadingData(true)
+
       let tx = await dataUserSession.contractInstance.methods.add_review(productID, comment, rating);
 
       console.log('tx')
 
+      setLoadingData(false)
       Swal.fire({
         icon: 'success',
         title: 'Create review success!',
@@ -215,7 +220,7 @@ const Page: NextPageWithLayout = () => {
       })
 
     } catch (error) {
-
+      setLoadingData(false)
     }
   }
 
@@ -307,6 +312,7 @@ const Page: NextPageWithLayout = () => {
               </div>
             </div>
             <form onSubmit={handleSubmit(handleCreateReview)}>
+              <LoadingData loading={loadingData}></LoadingData>
               <div className="form-group">
                 <label htmlFor="message">Your Review *</label>
                 <textarea {...register('commentReview', { required: true })} rows={5} className="form-control" />
@@ -335,13 +341,15 @@ const Page: NextPageWithLayout = () => {
           </div>
 
           <div className="col-lg-7 pb-5">
-            <h3 className="font-weight-semi-bold">{dataProductDetail['name']}</h3>
-            <div className="d-flex mb-3">
+            <h3 className="font-weight-semi-bold" style={{ color: '#43B4A0' }} >{dataProductDetail['name']}</h3>
+            <div className="d-flex mb-2">
               <small className="pt-1">({listDataReview.length} Reviews)</small>
             </div>
-            <div className="d-flex mb-3">
-              <p className="font-weight-semi-bold">Adress Owner: {dataProductDetail['seller']}</p>
+
+            <div className="d-flex mb-4">
+              <small className="font-weight-semi-bold">Adress Owner: {dataProductDetail['seller']}</small>
             </div>
+
             <h3 className="font-weight-semi-bold mb-4">
               {(Number(dataProductDetail['price']) / (10 ** 18)).toFixed(4)}
               <span className='currency-product'> AE</span>
@@ -351,7 +359,7 @@ const Page: NextPageWithLayout = () => {
               {dataProductDetail['description']}
             </p>
 
-            <div className="d-flex align-items-center mb-4 pt-2">
+            <div className="d-flex align-items-center mb-4" style={{ paddingTop: '20px', borderTop: '1px solid rgba(0, 0, 0, 0.1)' }}>
               {handleButtonBuyNow(dataProductDetail['id'], Number(dataProductDetail['price']), dataProductDetail['seller'])}
             </div>
           </div>

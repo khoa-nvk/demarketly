@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import truncateMiddle from "../../lib/truncate";
 import Swal from 'sweetalert2'
 import { useAeternity } from "../../providers/AeternityProvider";
+import { useRouter } from 'next/router'
 
 export default function BuyProductButton(props: any) {
 
 
   const dataUserSession = useAeternity()
+  const router = useRouter()
 
   console.log('Props button buy product', props)
   const idProduct = props.id
@@ -59,7 +61,7 @@ export default function BuyProductButton(props: any) {
       text: 'Estimated completion time: a few seconds or maybe sooner',
       showConfirmButton: true
     }).then((result) => {
-      // router.push('/seller/catalog/products')
+      router.push('/seller/catalog/products')
     })
   }
 
@@ -79,7 +81,7 @@ export default function BuyProductButton(props: any) {
       text: 'Estimated completion time: a few seconds or maybe sooner',
       showConfirmButton: true
     }).then((result) => {
-      // router.push('/seller/catalog/products')
+      router.push('/dashboard')
     })
   }
 

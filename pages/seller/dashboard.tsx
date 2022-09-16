@@ -9,6 +9,7 @@ import type { NextPageWithLayout } from '../_app'
 import { useAeternity } from "../../providers/AeternityProvider";
 import ProfitStatisticComponent from '../../components/sellerDashboardComponents/ProfitStatisticComponent';
 import LoadingData from '../../components/LoadingData';
+import ReviewStatisticComponent from '../../components/sellerDashboardComponents/ReviewStatisticComponent';
 
 
 const Page: NextPageWithLayout = () => {
@@ -20,6 +21,7 @@ const Page: NextPageWithLayout = () => {
   const [templateListProduct, setTemplateListProduct] = useState([]);
   const [listProductWithReceipt, setListProductWithReceipt] = useState([])
   const [dataChart, setDataChart] = useState([])
+  const [dataReviews, setDataReviews] = useState([])
 
 
   const [revenueSeller, setRevenueSeller] = useState<number>(0);
@@ -50,6 +52,35 @@ const Page: NextPageWithLayout = () => {
     let listProductOfSeller = await dataUserSession.contractInstance.methods.get_seller_products(dataUserSession.address)
     console.log('listProductIDsOfSeller', listProductOfSeller.decodedResult)
     getDetailAllProductOfSeller(listProductOfSeller.decodedResult)
+   
+
+  }
+
+  const getListReviewOfAllProduct = (listProducts:any) => {
+    let listPromise: any[] = []
+    listProducts.forEach((item: any) => {
+      listPromise.push(dataUserSession.contractInstance.methods.get_reviews(item.id))
+    })
+
+    Promise.all(listPromise).then((values) => {
+
+      let listProductReview: any = []
+
+      values.forEach((item_value, index) => {
+        item_value.decodedResult.forEach((itemReview:any) => {
+          let obj = {
+            review: itemReview,
+            product: listProducts[index]
+          }
+          listProductReview.push(obj)
+        }) 
+      })  
+      dataReviews = listProductReview
+      let temp = toObject(listProductReview)
+      setDataReviews(temp)
+
+      console.log('dataReviews', dataReviews)
+    });
 
   }
 
@@ -72,6 +103,7 @@ const Page: NextPageWithLayout = () => {
       console.log('listProductSelletDetailFinal', listProductDetail);
 
       getBuyersOfEachProduct(listProductDetail)
+      getListReviewOfAllProduct(listProductDetail)
 
       templateListProduct = listProductDetail
       let temp = toObject(listProductDetail)
@@ -233,6 +265,11 @@ const Page: NextPageWithLayout = () => {
         <TransactionStatisticComponent dataTable={listProductWithReceipt}></TransactionStatisticComponent>
       )
     }
+    if (statisticType == 'reviews') {
+      return (
+        <ReviewStatisticComponent dataTable={dataReviews}></ReviewStatisticComponent>
+      )
+    }
   }
 
   const renderTopStatistic = () => {
@@ -272,11 +309,11 @@ const Page: NextPageWithLayout = () => {
             <p className="text-success d-flex justify-center"><i className="mdi mdi-menu-up" /><span>+ 100%</span></p>
           </div> */}
 
-            {/* <div className={statisticType == 'reviews' ? "item-statistic active" : "item-statistic"} onClick={() => setStatisticType('reviews')}>
-            <p className="statistics-title">Reviews</p>
-            <h3 className="rate-percentage">2</h3>
-            <p className="text-success d-flex justify-center"><i className="mdi mdi-menu-up" /><span>+ 100%</span></p>
-          </div> */}
+            <div className={statisticType == 'reviews' ? "item-statistic active" : "item-statistic"} onClick={() => setStatisticType('reviews')}>
+              <p className="statistics-title">Reviews</p>
+              <h3 className="rate-percentage">2</h3>
+              <p className="text-success d-flex justify-center"><i className="mdi mdi-menu-up" /><span>+ 100%</span></p>
+            </div>
 
           </div>
         </div>

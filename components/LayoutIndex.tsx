@@ -16,7 +16,7 @@ export default function LayoutIndex({ children }: PropsWithChildren<{}>) {
       <AeternityProvider>
         <Toaster position="bottom-right" />
         <HeaderIndex></HeaderIndex>
-        <div className="pt-120-px">
+        <div className="pt-75-px">
           <main className="mb-auto">
             {children}
           </main>

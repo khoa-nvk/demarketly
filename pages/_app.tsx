@@ -5,6 +5,7 @@ import '../styles/scss/vertical-layout-light/style.scss'
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/index-page/index-page.css'
 import 'sweetalert2/src/sweetalert2.scss'
+import '../styles/style.scss'
 
 import type { AppProps } from 'next/app'
 import type { ReactElement, ReactNode } from 'react'
