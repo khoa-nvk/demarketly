@@ -5,14 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 
-// import { contractOwnerAddress, contractName, currentNetwork} from '../../../../network-config';
-// import { StringAsciiCV,stringUtf8CV,uintCV, trueCV,falseCV, stringAsciiCV, cvToHex, hexToCV, standardPrincipalCV , ClarityType } from '@stacks/transactions';
-// import { ReadOnlyFunctionSuccessResponse } from '@stacks/blockchain-api-client';
-// import {contractsApi} from '../../../../api/config';
-// import { appDetails } from "../../../../lib/constants"
-// import { useTransactionToasts } from "../../../../providers/TransactionToastProvider";
-// import { ContractCallRegularOptions, openContractCall, UserData } from "@stacks/connect";
-
 import truncateMiddle from "../../../../lib/truncate";
 
 import { useAeternity } from "../../../../providers/AeternityProvider";
@@ -132,7 +124,7 @@ const Page: NextPageWithLayout = () => {
                 setLoadingData(false)
                 Swal.fire({
                     icon: 'success',
-                    title: 'Updating this product on Stacks blockchain, please wait for a moment!',
+                    title: 'Updating this product on blockchain, please wait for a moment!',
                     text: 'Estimated completion time: a few seconds or maybe sooner',
                     showConfirmButton: true
                 }).then((result) => {

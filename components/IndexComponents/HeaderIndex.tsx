@@ -1,5 +1,4 @@
 import Auth from "../../components/Auth";
-import { useStacks } from "../../providers/StacksProvider";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
 import Link from "next/link";

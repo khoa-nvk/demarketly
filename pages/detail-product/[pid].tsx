@@ -1,14 +1,7 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useEffect, useState } from "react";
-import { contractsApi } from '../../api/config'
-import { StringAsciiCV, standardPrincipalCV, stringAsciiCV, uintCV, cvToHex, hexToCV, ClarityType, cvToJSON } from '@stacks/transactions';
-import {
-  ReadOnlyFunctionSuccessResponse,
-} from '@stacks/blockchain-api-client';
-import { contractOwnerAddress, contractName, currentNetwork } from '../../network-config';
 import BuyProductButton from '../../components/IndexComponents/BuyProductButton';
-
 import { useAeternity } from "../../providers/AeternityProvider";
 
 import type { ReactElement } from 'react'
@@ -16,10 +9,7 @@ import LayoutIndex from '../../components/LayoutIndex'
 import type { NextPageWithLayout } from '../_app'
 import ReactStars from "react-star-rating-component";
 import { useForm } from 'react-hook-form';
-import { ContractCallRegularOptions, openContractCall, UserData } from "@stacks/connect";
-import { appDetails } from "../../lib/constants"
 
-import truncateMiddle from "../../lib/truncate";
 import LoadingData from '../../components/LoadingData';
 import Swal from 'sweetalert2'
 

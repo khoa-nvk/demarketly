@@ -35,14 +35,6 @@ const Page: NextPageWithLayout = () => {
 
               <p>We&#39;re transparent about DeMarketly. You can find the contract code of DeMarketly at&nbsp;</p>
 
-              {/* <p>Mainnet:&nbsp;</p>
-
-              <p><a href="https://explorer.stacks.co/txid/0x08fe0daf265da9c42c3725d2b855d65641aaafa37f860a20b858decaaa96eeff?chain=mainnet">https://explorer.stacks.co/txid/0x08fe0daf265da9c42c3725d2b855d65641aaafa37f860a20b858decaaa96eeff?chain=mainnet</a></p>
-
-              <p>Testnet:&nbsp;</p>
-
-              <p><a href="https://explorer.stacks.co/txid/0x8348bb06706fdb38665b783ebfb2f128358b9348979ebbaee51b1c3af8719aa0?chain=testnet">https://explorer.stacks.co/txid/0x8348bb06706fdb38665b783ebfb2f128358b9348979ebbaee51b1c3af8719aa0?chain=testnet</a></p> */}
-
               <h3>Contact</h3>
 
               <p>For business inquiries, please contact email <a href="mailto:hello@demarketly.com?subject=Hello%20DeMarketly">hello@DeMarketly.com</a></p>

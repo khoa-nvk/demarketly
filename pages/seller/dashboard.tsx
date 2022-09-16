@@ -19,6 +19,7 @@ const Page: NextPageWithLayout = () => {
 
   const [templateListProduct, setTemplateListProduct] = useState([]);
   const [listProductWithReceipt, setListProductWithReceipt] = useState([])
+  const [dataChart, setDataChart] = useState([])
 
 
   const [revenueSeller, setRevenueSeller] = useState<number>(0);
@@ -119,10 +120,13 @@ const Page: NextPageWithLayout = () => {
 
 
     Promise.all(listPromise).then((values) => {
-      let dataProductWithReceipt = null
+
 
       values.forEach((item_value, index) => {
         item_value.decodedResult.forEach((item_purchased: any, index2: number) => {
+
+          let dataProductWithReceipt = null
+
           if (item_purchased.product_id == listAddressBuyerOfProduct.product.id) {
             let obj = {
               dataReceipt: item_purchased,
@@ -131,19 +135,21 @@ const Page: NextPageWithLayout = () => {
             }
             dataProductWithReceipt = obj
           }
+
+          if (dataProductWithReceipt) {
+            console.log('dataProductWithReceipt', dataProductWithReceipt);
+
+            let clone = toObject(listProductWithReceipt)
+            clone.push(dataProductWithReceipt)
+            listProductWithReceipt = clone
+            setListProductWithReceipt(clone)
+            console.log('listProductWithReceipt', listProductWithReceipt)
+            updateStaticInfo()
+          }
         })
       })
 
-      if (dataProductWithReceipt) {
-        console.log('dataProductWithReceipt', dataProductWithReceipt);
 
-        let clone = toObject(listProductWithReceipt)
-        clone.push(dataProductWithReceipt)
-        listProductWithReceipt = clone
-        setListProductWithReceipt(clone)
-        console.log('listProductWithReceipt', listProductWithReceipt)
-        updateStaticInfo()
-      }
     });
 
   }
@@ -157,6 +163,50 @@ const Page: NextPageWithLayout = () => {
     })
     setRevenueSeller(totalRevenue)
     setProfitSeller(totalProfit)
+
+    updateDataChart()
+  }
+
+  const updateDataChart = () => {
+
+    let dataChartTemp: any[] = []
+    listProductWithReceipt.forEach((itemReceipt: any, index1: number) => {
+      // check have product in dataChartTemp
+      let checkHaveProduct = false
+      let indexProduct = -1
+      dataChartTemp.forEach((itemDataChart: any, index2: number) => {
+        if (itemDataChart.product_id == itemReceipt.product.product.id) {
+          checkHaveProduct = true
+          indexProduct = index2
+        }
+      })
+
+      if (checkHaveProduct) {
+        // already have product , total origin price and profit price
+        if (indexProduct != -1) {
+          dataChartTemp[indexProduct].origin_price += Number(itemReceipt.dataReceipt.origin_price)
+          dataChartTemp[indexProduct].profit_price += Number(itemReceipt.dataReceipt.profit_price)
+        }
+
+      } else {
+        let obj = {
+          product_id: itemReceipt.product.product.id,
+          product_name: itemReceipt.product.product.name,
+          origin_price: Number(itemReceipt.dataReceipt.origin_price),
+          profit_price: Number(itemReceipt.dataReceipt.profit_price),
+        }
+        dataChartTemp.push(obj)
+      }
+    })
+
+    console.log('dataChartTemp', dataChartTemp)
+
+
+
+    // //set datachart
+    let clone = toObject(dataChartTemp)
+    dataChart = clone
+    setDataChart(clone)
   }
 
   const toObject = (data: object) => {
@@ -170,12 +220,12 @@ const Page: NextPageWithLayout = () => {
   const renderContentStatistic = () => {
     if (statisticType == 'revenue') {
       return (
-        <RevenueStatisticComponent data={listProductWithReceipt}></RevenueStatisticComponent>
+        <RevenueStatisticComponent data={dataChart}></RevenueStatisticComponent>
       )
     }
     if (statisticType == 'profit') {
       return (
-        <ProfitStatisticComponent data={listProductWithReceipt}></ProfitStatisticComponent>
+        <ProfitStatisticComponent data={dataChart}></ProfitStatisticComponent>
       )
     }
     if (statisticType == 'transaction') {

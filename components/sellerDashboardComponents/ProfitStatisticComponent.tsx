@@ -5,17 +5,21 @@ export default function ProfitStatisticComponent(props: any) {
 
   const canvasEl = useRef(null);
 
+  const [instanceChart, setInstanceChart] = useState(null)
+
   useEffect(() => {
 
     if (props.data) {
+      if(instanceChart) {
+        instanceChart.destroy()
+      }
       if (props.data.length > 0) {
         let listLabel: any[] = []
         let listValue: any[] = []
 
         props.data.forEach((item: any) => {
-
-          listLabel.push(item.product.product.name)
-          listValue.push(Number(item.dataReceipt.profit_price) / 10 ** 18)
+          listLabel.push(item.product_name)
+          listValue.push(item.origin_price/(10**18))
         })
 
         initDataChart(listLabel, listValue)
@@ -76,6 +80,9 @@ export default function ProfitStatisticComponent(props: any) {
 
     };
     const myLineChart = new Chart(ctx, config);
+
+    setInstanceChart(myLineChart)
+
 
     return function cleanup() {
       myLineChart.destroy();

@@ -1,19 +1,5 @@
-// import { currentNetwork, contractOwnerAddress, contractName} from '../../network-config'
-// import { ContractCallRegularOptions, openContractCall } from "@stacks/connect";
-// import { appDetails} from "../../lib/constants";
-// import { uintCV,StringAsciiCV, stringAsciiCV, cvToHex, hexToCV, ClarityType,
-//           makeStandardSTXPostCondition,
-//           makeContractSTXPostCondition,
-//           FungibleConditionCode} from "@stacks/transactions";
-
-// import {contractsApi} from '../../api/config'
 import { useEffect, useState } from "react";
 
-// import {
-//     ReadOnlyFunctionSuccessResponse,
-//   } from '@stacks/blockchain-api-client';
-
-// import { useTransactionToasts } from "../../providers/TransactionToastProvider";
 import truncateMiddle from "../../lib/truncate";
 import Swal from 'sweetalert2'
 import { useAeternity } from "../../providers/AeternityProvider";
@@ -38,8 +24,6 @@ export default function BuyProductButton(props: any) {
 
   const [disableBuyButton, setDisableBuyButton] = useState(false)
 
-  // const { addTransactionToast } = useTransactionToasts()
-
   useEffect(() => {
     if (couponCode != '') {
       const timeOutId = setTimeout(() => {
@@ -60,29 +44,12 @@ export default function BuyProductButton(props: any) {
     }
   }
 
-  //   const writeProductIdAndTxIdToJsonFile = async (address:string|undefined,txId:string, type:string) => {
-  //     let obj = {
-  //         tx: txId,
-  //         address: address,
-  //         type: type,
-  //     }
-  //     const response = await fetch('/api/transaction', {
-  //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  //         headers: {
-  //           'Content-Type': 'application/json'
-  //         },
-  //         body: JSON.stringify(obj) // body data type must match "Content-Type" header
-  //       });
-  //     console.log(response)
-
-  //     // return response.json(); // parses JSON response into native JavaScript objects
-  // }
 
   const buyProduct = async () => {
 
     console.log("buyProduct")
 
-    let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, false, '', { amount: priceProduct})
+    let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, false, '', { amount: priceProduct })
 
     console.log(buyProduct)
 
@@ -102,9 +69,9 @@ export default function BuyProductButton(props: any) {
 
     let newAmount = priceProduct - discountAmountValue
 
-    let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, true, couponCode,{ amount: newAmount })
+    let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, true, couponCode, { amount: newAmount })
 
-    console.log('buyProduct withcoupon',buyProduct)
+    console.log('buyProduct withcoupon', buyProduct)
 
     Swal.fire({
       icon: 'success',
@@ -135,7 +102,7 @@ export default function BuyProductButton(props: any) {
           return (
             <div className="coupon-success-text mt-2">
               <div>
-                Your Coupon is {discountAmountValueFormat/(10**18)} AE off
+                Your Coupon is {discountAmountValueFormat / (10 ** 18)} AE off
               </div>
               <div className='text-danger'>
                 Please contact the seller to get this product for free!
@@ -146,10 +113,10 @@ export default function BuyProductButton(props: any) {
           return (
             <div className="coupon-success-text mt-2">
               <div>
-                Your Coupon is {discountAmountValueFormat/10**18} AE off
+                Your Coupon is {discountAmountValueFormat / 10 ** 18} AE off
               </div>
               <div>
-                The current price of the product is <span className="new-price-discount">{newPriceTypeAmount/10**18} AE</span>
+                The current price of the product is <span className="new-price-discount">{newPriceTypeAmount / 10 ** 18} AE</span>
               </div>
             </div>
           )

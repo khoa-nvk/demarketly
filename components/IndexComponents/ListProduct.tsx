@@ -5,15 +5,10 @@ import LoadingData from '../LoadingData';
 
 import { getAllTxsAddressContract } from '../../api/transaction';
 
-
-import { urlStackNodeApiV1Contract, fullContractOwnerAddressName } from '../../network-config';
-
 export default function ListProduct() {
 
   const [templateListProduct, setTemplateListProduct] = useState([]);
   const [loadingData, setLoadingData] = useState(true)
-  // const [totalTxsAddress, setTotalTxsAddress] = useState(0)
-
   const dataUserSession = useAeternity()
   console.log('data user session', dataUserSession)
 
