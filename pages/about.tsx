@@ -47,7 +47,7 @@ const Page: NextPageWithLayout = () => {
             <h1 className='text-center mb-4'>
             DeMarketly walkthrough video
             </h1>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/8ueYd0cKyY8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/fK57ESoE5sE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
 
         </div>
