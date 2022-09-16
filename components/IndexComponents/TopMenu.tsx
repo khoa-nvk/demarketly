@@ -47,7 +47,7 @@ export default function Sidebar() {
             </div>
             <div className="col-lg-6">
               <div className="hero-content">
-                <h1 data-aos="fade-up" data-aos-duration={1200} data-aos-delay={200}>decentralized marketplace secured on Æternity blockchain</h1>
+                <h1 data-aos="fade-up" data-aos-duration={1200} data-aos-delay={200}>Decentralized marketplace secured on Æternity blockchain</h1>
                 <p data-aos="fade-up" data-aos-duration={1200} data-aos-delay={300}>DeMarketly.com is a decentralized marketplace platform for the digital products like ebooks, courses, softwares secured on Æternity blockchain. DeMarketly will be FREE forever, no commission!</p>
                 <div className="hero-btn" data-aos="fade-up" data-aos-duration={1200} data-aos-delay={400}>
                   <Link href="/seller/catalog/products">
