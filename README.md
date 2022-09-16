@@ -1,23 +1,54 @@
-# Next.js + Tailwind CSS Example
+## DeMarketly.com Introduction 
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+[DeMarketly.com](https://DeMarketly.com/) is a decentralized marketplace platform for digital generation. 
 
-## Deploy your own
+You can easily create product and sell it on DeMarketly for free. All of your data will be saved on Æternity blockchain. 
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+DeMarketly will be FREE forever, no commission
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+## DeMarketly.com features 
 
-## How to use
+![](/screenshots/use-cases.png)
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+- Create product and sell it on DeMarketly for free
+- Create coupon 
+- Buy product with and without a coupon 
+- Review product
+- Seller analytics
 
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-# or
-pnpm create next-app -- --example with-tailwindcss with-tailwindcss-app
-```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+## Screenshots 
+
+### Homepage
+
+![](/screenshots/homepage.png)
+
+### Create Product 
+
+![](/screenshots/create_products.png)
+
+### Coupon
+
+![](/screenshots/coupons.png)
+
+### Seller Analytics
+
+![](/screenshots/analytics.png)
+
+### Buyer overview
+
+![](/screenshots/buyer_overview.png)
+
+### Add Review
+
+![](/screenshots/add-review.png)
+
+## Status 
+
+DeMarketly.com is at the beta version that can have minor issues and bug. We can migrate to another contract, so please use DeMarketly as an experiment right now.
+
+We do not take any responsibility for your lost.
+
+We will announce the final version of DeMarketly soon.
+
+
