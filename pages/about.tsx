@@ -45,7 +45,7 @@ const Page: NextPageWithLayout = () => {
 
               <h3>Contact</h3>
 
-              <p>For business inquiries, please contact email <a href="mailto:hello@paydii.com?subject=Hello%20Paydii">hello@DeMarketly.com</a></p>
+              <p>For business inquiries, please contact email <a href="mailto:hello@demarketly.com?subject=Hello%20DeMarketly">hello@DeMarketly.com</a></p>
 
 
             </div>
