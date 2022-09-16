@@ -84,7 +84,8 @@ payable contract DeMarketly =
             require(Call.value >= product.price , "You don't have enough attos to buy this product")
             // update statistics
             put(state{total_sale = (state.total_sale + product.price)})
-            Chain.spend(product.seller, product.price)  
+            update_after_buying(product, Call.caller, product.price)  
+            Chain.spend(product.seller, product.price)
         else
         // buyer send AE to seller without coupon 
             let current_coupon_key = {
@@ -105,17 +106,18 @@ payable contract DeMarketly =
             require(Call.value >= new_discount_price, "You don't have enough attos to buy this product")         
             // update statistics
             put(state{total_sale = (state.total_sale + new_discount_price)})
+            update_after_buying(product, Call.caller, new_discount_price)
             Chain.spend(product.seller, new_discount_price)
-        update_after_buying(product, Call.caller)        
-    
-    stateful function update_after_buying(product: product, caller_address: address) = 
+            
+
+    stateful function update_after_buying(product: product, caller_address: address, purchased_price: int) = 
         // update statistic
         put(state{total_product_sale = (state.total_product_sale + 1)})
         // add this product to buyer purchased products
         let new_info = { 
             product_id = product.id,
             origin_price = product.price, 
-            profit_price = product.price }
+            profit_price = purchased_price }
         
         // update list of purchased products
         if (Map.lookup(caller_address,state.buyers) == None)
