@@ -249,6 +249,13 @@ button:focus {
     outline: 5px auto -webkit-focus-ring-color;
 }
 
+.warning-testnet {
+    background-color: #ff7fc1;
+    color: black;
+    padding: 5px;
+    text-align: center;
+}
+
 input,
 button,
 select,
@@ -9969,11 +9976,10 @@ a.text-dark:focus {
 .page-body-wrapper {
     padding-left: 0px;
     padding-right: 0px;
+    padding-top: 100px;
 }
 
-.page-body-wrapper.is-tx-pending {
-    padding-top: 50px;
-}
+.page-body-wrapper.is-tx-pending {}
 
 .header-index {
     position: fixed;
