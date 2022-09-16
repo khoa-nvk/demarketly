@@ -19,7 +19,7 @@ export default function ProfitStatisticComponent(props: any) {
 
         props.data.forEach((item: any) => {
           listLabel.push(item.product_name)
-          listValue.push(item.origin_price/(10**18))
+          listValue.push(item.profit_price/(10**18))
         })
 
         initDataChart(listLabel, listValue)
