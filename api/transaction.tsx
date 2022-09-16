@@ -1,6 +1,6 @@
 import { CONTRACT_OWNER_ADDRESS, URL_CALL_API, NETWORK_NAME } from "../network-config";
 import { Node, RpcAepp } from '../js-sdk/es/index.mjs'
-import INFO_DEPLOY from "../deploy/Paydii.aes.deploy.json"
+import INFO_DEPLOY from "../deploy/DeMarketly.aes.deploy.json"
 
 export const getAllTxsAddressContract = async () => {
   let finalUrl = URL_CALL_API + '/mdw/v2/txs?direction=forward&contract=' + CONTRACT_OWNER_ADDRESS + '&limit=50'

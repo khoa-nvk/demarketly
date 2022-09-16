@@ -1,6 +1,6 @@
 
 // For testnet
-let contractAddress = 'ct_uTnwKXLNn3jhzVFFCxcC9iiWCXCtJNJj9YriVnKvx7S1Fy5nG'
+let contractAddress = 'ct_2UYZvZ5o3gUKFj4MTYjTiTirPjD2g134yKGJdHnxggbM55w7We'
 let urlCallAPI = 'https://testnet.aeternity.io'
 let networkName = 'testnet'
 
@@ -10,7 +10,7 @@ console.log('network-config')
 if (typeof window !== 'undefined') {
     if (localStorage.getItem('NETWORK_AETERNITY') == 'mainnet') {
         // For mainnet
-        let contractAddress = 'ct_uTnwKXLNn3jhzVFFCxcC9iiWCXCtJNJj9YriVnKvx7S1Fy5nG'
+        let contractAddress = 'ct_2UYZvZ5o3gUKFj4MTYjTiTirPjD2g134yKGJdHnxggbM55w7We'
         const urlCallAPI = 'https://mainnet.aeternity.io'
         let networkName = 'mainnet'
     }
