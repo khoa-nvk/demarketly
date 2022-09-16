@@ -2,7 +2,7 @@
 
 include "String.aes"
 
-payable contract Paydii =
+payable contract DeMarketly =
 
     record state =
         { index : int
