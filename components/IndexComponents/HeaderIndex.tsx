@@ -10,7 +10,11 @@ export default function HeaderIndex() {
   console.log(path)
 
   return (
-    <div className="header-index container-fluid ">
+    <div className="header-index container-fluid" style={{padding: '0px'}}>
+      <div className="warning-testnet">
+      The app is supporting <span style={{color: 'blue'}}>Æternity testnet</span> , please download  
+      <a style={{color: 'cyan'}} target="_blank" href='https://chrome.google.com/webstore/detail/superhero/mnhmmkepfddpifjkamaligfeemcbhdne/related'> [SuperHero Wallet]</a>
+      </div>
       <div className="row align-items-center header-index-wrapper px-xl-5">
         <div className="col-lg-2 d-none d-lg-block">
           <a href="/" className="text-decoration-none">

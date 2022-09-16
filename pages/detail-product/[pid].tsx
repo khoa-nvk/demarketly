@@ -333,7 +333,7 @@ const Page: NextPageWithLayout = () => {
 
   if (dataProductDetail) {
     return (
-      <div className="container-fluid py-5">
+      <div className="container-fluid py-5" style={{paddingTop: '100px!important'}}>
         <div className="row px-xl-5">
 
           <div className="col-lg-5 pb-5">
