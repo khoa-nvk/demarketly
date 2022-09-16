@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useAeternity } from "../../providers/AeternityProvider";
 import LoadingData from '../LoadingData';
 
-import { getAllTxsAddressContract } from '../../api/transaction';
 
 export default function ListProduct() {
 
@@ -13,39 +12,55 @@ export default function ListProduct() {
   console.log('data user session', dataUserSession)
 
   useEffect(() => {
-    getAllTxsAddressContract().then(txsInfo => {
-      console.log('txsInfo', txsInfo)
-      formatDataProduct(txsInfo.data)
-    })
+   
   }, [])
 
-  const formatDataProduct = (data: any) => {
-    console.log('formatProduct')
-    let listProduct: any[] = []
-    data.forEach((item: any, index: number) => {
-      if (item.tx.function) {
-        if (item.tx.function == "create_product") {
-          let obj = {
-            id: item.tx.arguments[0].value,
-            name: item.tx.arguments[1].value,
-            price: Number(item.tx.arguments[2].value) / 10 ** 18,
-            description: item.tx.arguments[3].value,
-            image: item.tx.arguments[4].value,
-            active: item.tx.arguments[5].value,
-            urlBuy: '/detail-product/' + item.tx.arguments[0].value
-          }
-          listProduct.push(obj)
-        }
-      }
-    })
-    console.log('listProduct', listProduct)
+  useEffect(() => {
+    if (dataUserSession.contractInstance) {
+     getTotalProductCreated()
+    }
+  }, [dataUserSession.contractInstance])
 
-    templateListProduct = listProduct
-    let temp = JSON.parse(JSON.stringify(listProduct))
-    setTemplateListProduct(temp)
+  const getTotalProductCreated = async () => {
+    let listTotalProduct = await dataUserSession.contractInstance.methods.get_all_products()
+    console.log('listTotalProduct', listTotalProduct.decodedResult)
+    getDetailAllProduct(listTotalProduct.decodedResult)
+  }
+
+  const getDetailAllProduct = (listProductIds: any) => {
+
+    let listPromise: any[] = []
+    listProductIds.forEach((itemId: any) => {
+      listPromise.push(dataUserSession.contractInstance.methods.get_product(itemId))
+    })
+
+    Promise.all(listPromise).then((values) => {
+      let listProductDetail: any = []
+
+      values.forEach((item_value, index) => {
+        let obj = item_value.decodedResult
+        obj.urlBuy = '/detail-product/' + item_value.decodedResult.id
+        listProductDetail.push(obj)
+      })
+
+      console.log('listAllProductDetailFinal', listProductDetail);
+
+    
+      templateListProduct = listProductDetail
+      let temp = toObject(listProductDetail)
+      setTemplateListProduct(temp)
+    });
+
     setLoadingData(false)
   }
 
+  const toObject = (data: object) => {
+    return JSON.parse(JSON.stringify(data, (key, value) =>
+      typeof value === 'bigint'
+        ? value.toString()
+        : value // return everything else unchanged
+    ));
+  }
 
   const dataProduct = () => {
     if (templateListProduct.length > 0) {
@@ -64,10 +79,10 @@ export default function ListProduct() {
                 <div className="auction-card style3">
                   <div className="auction-img">
                     <Link href={item.urlBuy}>
-                      <img src={item.image} alt="Image" />
+                      <img src={item.img} alt="Image" />
                     </Link>
                     <span className="item-popularity">
-                      {item.price.toFixed(2)} AE
+                      {(Number(item.price)/(10**18)).toFixed(2)} AE
                     </span>
 
                   </div>
@@ -84,27 +99,6 @@ export default function ListProduct() {
                 </div>
               </div>
 
-              // <div className="col-lg-3 col-md-6 col-sm-12 pb-1" key={id}>
-              //   <div className="card product-item border-0 mb-4">
-              //     <Link href={item.urlBuy}>
-              //       <div className="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-              //         <img className="img-fluid w-100" src={item.image} alt="" />
-              //       </div>
-              //     </Link>
-              //     <div className="card-body border-left border-right text-center p-0 pt-4 pb-3">
-              //       <h6 className="text-truncate mb-3">{item.name}</h6>
-              //     </div>
-              //     <div className="card-footer d-flex justify-content-between bg-light border align-items-center">
-              //       <Link href={item.urlBuy}>
-              //         <div className="btn btn-sm btn-outline-success"><i className="fas fa-eye text-primary mr-1" />View Detail</div>
-              //       </Link>
-
-              //       <div>
-              //         <h6 style={{ marginBottom: '0px' }}>AE {item.price.toFixed(3)}</h6>
-              //       </div>
-              //     </div>
-              //   </div>
-              // </div>
             ))}
           </div>
         </div>

@@ -45,6 +45,7 @@ const Page: NextPageWithLayout = () => {
 
 
     const createProduct = async (dataProduct: any) => {
+        setLoadingData(true)
         try {
             let id = initRandomId()
             let tx_create_product = await dataUserSession.contractInstance.methods.create_product(
@@ -57,7 +58,7 @@ const Page: NextPageWithLayout = () => {
             )
             if (tx_create_product) {
                 uploadUrlGaiaToMongoDB(id, dataProduct['contentDelivery'])
-
+                setLoadingData(false)
                 Swal.fire({
                     icon: 'success',
                     title: 'Creating products on blockchain, please wait a moment!',
@@ -68,6 +69,7 @@ const Page: NextPageWithLayout = () => {
                 })
             }
         } catch (error) {
+            setLoadingData(false)
             console.log(error)
             Swal.fire({
                 icon: 'error',
@@ -131,7 +133,7 @@ const Page: NextPageWithLayout = () => {
             <div className="col-md-10 grid-margin stretch-card">
                 <div className="card">
                     <div className="card-body">
-
+                        <LoadingData loading={loadingData}></LoadingData>
                         <form className="forms-seller-product" onSubmit={handleSubmit(handleCreateProduct)}>
                             <div className="form-group">
                                 <label>Product name (*)</label>

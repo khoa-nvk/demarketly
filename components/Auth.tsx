@@ -14,7 +14,10 @@ const customStyles = {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
+    borderRadius: '0px',
+    backgroundColor: '#120E30',
+    border: '1px solid rgba(255, 255, 255, 0.2)'
   },
 };
 
@@ -33,6 +36,20 @@ export default function Auth() {
     console.log('auth')
   }, []);
 
+  useEffect(() => {
+    if (dataUserSession.isConnectedWalletDone) {
+      // window.location.reload()
+      setIsOpen(false);
+      dataUserSession.resetIsConnectedWalletDone()
+    }
+  }, [dataUserSession.isConnectedWalletDone]);
+
+  useEffect(() => {
+    if (dataUserSession.listWalletScanned.length > 0) {
+      console.log('change scanwallet')
+    }
+  }, [dataUserSession.listWalletScanned]);
+
   const openModal = () => {
     setIsOpen(true);
   }
@@ -40,19 +57,20 @@ export default function Auth() {
 
   function afterOpenModal() {
     // scanwallet
-   
+    dataUserSession.scanWallet()
   }
 
   function closeModal() {
     setIsOpen(false);
   }
 
-
+  const handleConnectWallet= (index:number) => {
+    dataUserSession.connectExactWallet(index)
+  }
 
 
   const handleLogIn = () => {
-    // openModal()
-    dataUserSession.handleLogIn()
+    openModal()
   }
 
   const truncateAddress = (address: string) => {
@@ -87,8 +105,6 @@ export default function Auth() {
     } catch (error) {
       // TODO
     }
-
-
   }
 
   return (
@@ -108,17 +124,35 @@ export default function Auth() {
 
           <div className="body-modal">
             <div className="scan-wallet-wrapper">
-              <div className="item-wallet">
-                <div className="logo-wallet">
-                  <img src="/img/wallets/superhero.png"></img>
+            
+              {dataUserSession.isScanwallet == true ? (
+                <div className="loading-scan-wallet">
+                    <img src='/img/loading/img.gif'></img>
                 </div>
-                <div className="name-wallet">
-                  Superhero Wallet
+              ) : (
+                <div>
+                  {dataUserSession.listWalletScanned.map((item: any, key: number) => {
+                    return (
+                      <div className="item-wallet" key={key}>
+                        <div className="logo-wallet">
+                          <img src="/img/wallets/superhero.png"></img>
+                        </div>
+                        <div className="name-wallet">
+                          {item.name} Wallet
+                        </div>
+                        <div className="btn-connect">
+                          <button className="btn btn-info btn-fw" onClick={(e) => handleConnectWallet(key)}>Connect Wallet</button>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
-                <div className="btn-connect">
-                  <button className="btn btn-info btn-fw">Connect Wallet</button>
-                </div>
-              </div>
+              )}
+
+
+
+
+
             </div>
           </div>
 

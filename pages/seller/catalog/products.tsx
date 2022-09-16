@@ -18,7 +18,9 @@ const Page: NextPageWithLayout = () => {
 
   useEffect(() => {
     if(dataUserSession.address) {
-
+      if (dataUserSession.contractInstance) {
+        getListProducBySeller(dataUserSession.address)
+      }
     }
   },[dataUserSession.address])
 

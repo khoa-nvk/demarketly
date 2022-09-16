@@ -32,6 +32,9 @@ const Page: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (dataUserSession.address) {
+      if (dataUserSession.contractInstance) {
+        getListProducBySeller(dataUserSession.address)
+      }
 
     }
   }, [dataUserSession.address])
@@ -39,9 +42,7 @@ const Page: NextPageWithLayout = () => {
   useEffect(() => {
     if (dataUserSession.contractInstance) {
       if (dataUserSession.address) {
-        if (dataUserSession.address) {
-          getListProducBySeller(dataUserSession.address)
-        }
+        getListProducBySeller(dataUserSession.address)
       }
     }
   }, [dataUserSession.contractInstance])
@@ -52,11 +53,11 @@ const Page: NextPageWithLayout = () => {
     let listProductOfSeller = await dataUserSession.contractInstance.methods.get_seller_products(dataUserSession.address)
     console.log('listProductIDsOfSeller', listProductOfSeller.decodedResult)
     getDetailAllProductOfSeller(listProductOfSeller.decodedResult)
-   
+
 
   }
 
-  const getListReviewOfAllProduct = (listProducts:any) => {
+  const getListReviewOfAllProduct = (listProducts: any) => {
     let listPromise: any[] = []
     listProducts.forEach((item: any) => {
       listPromise.push(dataUserSession.contractInstance.methods.get_reviews(item.id))
@@ -67,14 +68,14 @@ const Page: NextPageWithLayout = () => {
       let listProductReview: any = []
 
       values.forEach((item_value, index) => {
-        item_value.decodedResult.forEach((itemReview:any) => {
+        item_value.decodedResult.forEach((itemReview: any) => {
           let obj = {
             review: itemReview,
             product: listProducts[index]
           }
           listProductReview.push(obj)
-        }) 
-      })  
+        })
+      })
       dataReviews = listProductReview
       let temp = toObject(listProductReview)
       setDataReviews(temp)
@@ -232,8 +233,6 @@ const Page: NextPageWithLayout = () => {
     })
 
     console.log('dataChartTemp', dataChartTemp)
-
-
 
     // //set datachart
     let clone = toObject(dataChartTemp)

@@ -17,8 +17,15 @@ interface AeternityContextValue {
   contractInstance: null,
   walletUser: any,
   address?: string,
-  handleLogIn: () => void,
-  handleLogOut: () => void
+  // handleLogIn: () => void,
+  handleLogOut: () => void,
+
+  isScanwallet: boolean,
+  isConnectedWalletDone: boolean,
+  scanWallet: () => void,
+  listWalletScanned: any,
+  connectExactWallet: (index: number) => void,
+  resetIsConnectedWalletDone: () => void
 }
 
 const AeternityContext = createContext<AeternityContextValue | undefined>(undefined);
@@ -28,6 +35,10 @@ export default function AeternityProvider({ children }: PropsWithChildren<{}>) {
   const [contractInstance, setContractInstance] = useState(null);
   const [walletUser, setWalletUser] = useCounterStateWalletUser(null);
   const [address, setAddress] = useCounterStateAddress('')
+
+  const [isScanwallet, setIsScanwallet] = useState(false)
+  const [isConnectedWalletDone, setIsConnectedWalletDone] = useState(false)
+  const [listWalletScanned, setListWalletScanned] = useState([])
 
 
 
@@ -58,10 +69,10 @@ export default function AeternityProvider({ children }: PropsWithChildren<{}>) {
     })
   }
 
-  const handleLogIn = async () => {
-    // Start looking for wallets
-    await scanForWallets() // Start looking for new wallets
-  }
+  // const handleLogIn = async () => {
+  //   // Start looking for wallets
+  //   await scanForWallets() // Start looking for new wallets
+  // }
 
   const handleLogOut = async () => {
     setAddress(null)
@@ -71,84 +82,89 @@ export default function AeternityProvider({ children }: PropsWithChildren<{}>) {
     // console.log('logout',logout)
   }
 
+  const resetIsConnectedWalletDone = () => {
+    setIsConnectedWalletDone(false)
+  }
+
   const connectToWallet = async (wallet: any) => {
 
-    if (sdkAeternity) {
-      wallet.getConnection().then((connectionWallet) => {
-
-        sdkAeternity.connectToWallet(connectionWallet).then((connectWallet) => {
-
-          console.log(connectWallet)
-          sdkAeternity.subscribeAddress('subscribe', 'connected').then((accounts) => {
-            console.log(accounts)
-            sdkAeternity.address().then((selectedAccountAddress) => {
-              console.log(selectedAccountAddress)
-
-              walletUser = wallet
-              let temp = JSON.parse(JSON.stringify(wallet))
-              setWalletUser(temp)
-
-              let info = sdkAeternity.rpcClient.getCurrentAccount()
-              console.log('info', info)
-              setAddress(info)
-
-              let walletName = sdkAeternity.rpcClient.info.name
-              console.log('walletName', walletName);
-            })
-          })
-        })
-      })
-
-
-
-
-
-    } else {
-      getSdkAeternity().then(async function (sdk) {
-        sdkAeternity = sdk
-        setSdkAeternity(sdk)
-
-        getContractInstance(sdk).then((contractInstance) => {
-          console.log('contractIns', contractInstance);
-          contractInstance = contractInstance
-          let copy = Object.assign({}, contractInstance)
-          setContractInstance(copy)
-        })
-
-
+    setIsScanwallet(true)
+    try {
+      if (sdkAeternity) {
         wallet.getConnection().then((connectionWallet) => {
 
-          sdk.connectToWallet(connectionWallet).then((connectWallet) => {
+          sdkAeternity.connectToWallet(connectionWallet).then((connectWallet) => {
 
             console.log(connectWallet)
-            sdk.subscribeAddress('subscribe', 'connected').then((accounts) => {
+            sdkAeternity.subscribeAddress('subscribe', 'connected').then((accounts) => {
               console.log(accounts)
-              sdk.address().then((selectedAccountAddress) => {
+              sdkAeternity.address().then((selectedAccountAddress) => {
                 console.log(selectedAccountAddress)
 
                 walletUser = wallet
                 let temp = JSON.parse(JSON.stringify(wallet))
                 setWalletUser(temp)
 
-                let info = sdk.rpcClient.getCurrentAccount()
+                let info = sdkAeternity.rpcClient.getCurrentAccount()
                 console.log('info', info)
                 setAddress(info)
 
-                let walletName = sdk.rpcClient.info.name
+                let walletName = sdkAeternity.rpcClient.info.name
                 console.log('walletName', walletName);
 
+                setIsScanwallet(false)
+                setIsConnectedWalletDone(true)
+                
               })
             })
-
-
-
           })
         })
 
+      } else {
+        getSdkAeternity().then(async function (sdk) {
+          sdkAeternity = sdk
+          setSdkAeternity(sdk)
+
+          getContractInstance(sdk).then((contractInstance) => {
+            console.log('contractIns', contractInstance);
+            contractInstance = contractInstance
+            let copy = Object.assign({}, contractInstance)
+            setContractInstance(copy)
+          })
 
 
+          wallet.getConnection().then((connectionWallet) => {
 
-      })
+            sdk.connectToWallet(connectionWallet).then((connectWallet) => {
+
+              console.log(connectWallet)
+              sdk.subscribeAddress('subscribe', 'connected').then((accounts) => {
+                console.log(accounts)
+                sdk.address().then((selectedAccountAddress) => {
+                  console.log(selectedAccountAddress)
+
+                  walletUser = wallet
+                  let temp = JSON.parse(JSON.stringify(wallet))
+                  setWalletUser(temp)
+
+                  let info = sdk.rpcClient.getCurrentAccount()
+                  console.log('info', info)
+                  setAddress(info)
+
+                  let walletName = sdk.rpcClient.info.name
+                  console.log('walletName', walletName);
+
+                  setIsScanwallet(false)
+                  setIsConnectedWalletDone(true)
+
+                })
+              })
+            })
+          })
+        })
+      }
+    } catch (error) {
+      setIsScanwallet(false)
     }
 
   }
@@ -158,12 +174,12 @@ export default function AeternityProvider({ children }: PropsWithChildren<{}>) {
     const handleWallets = async function ({ wallets, newWallet }) {
       newWallet = newWallet || Object.values(wallets)[0]
       // ask if you want to connect
-      // if (confirm(`Do you want to connect to wallet ${newWallet.name}`)) {
+      
       // Stop scanning wallets
       detector.stopScan()
       // Connect to wallet
       await connectToWallet(newWallet)
-      // }
+      
     }
 
     // Create connection object for WalletDetector
@@ -177,7 +193,65 @@ export default function AeternityProvider({ children }: PropsWithChildren<{}>) {
   }
 
 
-  const value: AeternityContextValue = { sdkAeternity, contractInstance, walletUser, address, handleLogIn, handleLogOut };
+
+
+  const scanWallet = async () => {
+
+    setIsScanwallet(true)
+
+    const scannerConnection = await BrowserWindowMessageConnection({
+      connectionInfo: { id: 'spy' },
+    });
+
+    const detector = await WalletDetector({ connection: scannerConnection });
+
+    const walletScanningTimeout = setTimeout(() => {
+      detector.stopScan();
+      setIsScanwallet(false)
+    }, 5000);
+
+    detector.scan(async ({ wallets }) => {
+      let listWallet = [
+        ...Object.values(wallets).map((wallet) => ({
+          ...wallet,
+          description: 'Easy-to-use browser extension.',
+        })),
+      ];
+
+
+
+      listWalletScanned = listWallet
+      setListWalletScanned(listWallet)
+
+      console.log('listWalletScanned', listWalletScanned)
+
+      clearTimeout(walletScanningTimeout);
+      detector.stopScan();
+      setIsScanwallet(false)
+    });
+  }
+
+  const connectExactWallet = async (index: number) => {
+    console.log('connectExactWallet')
+    await connectToWallet(listWalletScanned[index])
+  }
+
+
+  const value: AeternityContextValue = {
+    sdkAeternity,
+    contractInstance,
+    walletUser,
+    address,
+    // handleLogIn,
+    handleLogOut,
+
+    isScanwallet,
+    isConnectedWalletDone,
+    scanWallet,
+    listWalletScanned,
+    connectExactWallet,
+    resetIsConnectedWalletDone
+  };
 
   return (
     <AeternityContext.Provider value={value}>

@@ -4,6 +4,7 @@ import truncateMiddle from "../../lib/truncate";
 import Swal from 'sweetalert2'
 import { useAeternity } from "../../providers/AeternityProvider";
 import { useRouter } from 'next/router'
+import LoadingData from "../LoadingData";
 
 export default function BuyProductButton(props: any) {
 
@@ -24,6 +25,7 @@ export default function BuyProductButton(props: any) {
   const [discountAmountValue, setDiscountAmountValue] = useState<number>(0);
   const [isDiscountPercent, setIsDiscountPercent] = useState<boolean>(false);
 
+  const [loadingData, setLoadingData] = useState(false)
   const [disableBuyButton, setDisableBuyButton] = useState(false)
 
   useEffect(() => {
@@ -49,40 +51,71 @@ export default function BuyProductButton(props: any) {
 
   const buyProduct = async () => {
 
-    console.log("buyProduct")
+    try {
+      setLoadingData(true)
 
-    let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, false, '', { amount: priceProduct })
+      console.log("buyProduct")
 
-    console.log(buyProduct)
+      let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, false, '', { amount: priceProduct })
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Buying products on blockchain, please wait a moment!',
-      text: 'Estimated completion time: a few seconds or maybe sooner',
-      showConfirmButton: true
-    }).then((result) => {
-      router.push('/seller/catalog/products')
-    })
+      console.log(buyProduct)
+      setLoadingData(false)
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Buying products on blockchain, please wait a moment!',
+        text: 'Estimated completion time: a few seconds or maybe sooner',
+        showConfirmButton: true
+      }).then((result) => {
+        window.location.reload()
+      })
+    } catch (error) {
+      setLoadingData(false)
+      Swal.fire({
+        icon: 'error',
+        title: 'Have error when buy product',
+        showConfirmButton: true
+      }).then((result) => {
+
+      })
+    }
+
+
   }
 
   const buyProductWithCoupon = async () => {
 
-    console.log("buyProduct With coupon")
 
-    let newAmount = priceProduct - discountAmountValue
+    try {
+      setLoadingData(true)
+      console.log("buyProduct With coupon")
 
-    let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, true, couponCode, { amount: newAmount })
+      let newAmount = priceProduct - discountAmountValue
 
-    console.log('buyProduct withcoupon', buyProduct)
+      let buyProduct = await dataUserSession.contractInstance.methods.buy_product(idProduct, true, couponCode, { amount: newAmount })
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Buying products on blockchain, please wait a moment!',
-      text: 'Estimated completion time: a few seconds or maybe sooner',
-      showConfirmButton: true
-    }).then((result) => {
-      router.push('/dashboard')
-    })
+      console.log('buyProduct withcoupon', buyProduct)
+
+      setLoadingData(false)
+      Swal.fire({
+        icon: 'success',
+        title: 'Buying products on blockchain, please wait a moment!',
+        text: 'Estimated completion time: a few seconds or maybe sooner',
+        showConfirmButton: true
+      }).then((result) => {
+        window.location.reload()
+      })
+    } catch (error) {
+      setLoadingData(false)
+      Swal.fire({
+        icon: 'error',
+        title: 'Have error when buy product',
+        showConfirmButton: true
+      }).then((result) => {
+
+      })
+    }
+
   }
 
   const renderTextValidCoupon = () => {
@@ -179,6 +212,7 @@ export default function BuyProductButton(props: any) {
   return (
 
     <div className="card buy-product-wrapper border-0 mb-4 p-4">
+      <LoadingData loading={loadingData}></LoadingData>
 
       <div className="mb-4">
         <input

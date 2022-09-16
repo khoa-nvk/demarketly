@@ -21,7 +21,12 @@ const Page: NextPageWithLayout = () => {
 
 
   useEffect(() => {
-    if (dataUserSession.address) { 
+    if (dataUserSession.address) {
+      if (dataUserSession.contractInstance) {
+        getListProductPurchased()
+        getListReviewed()
+        setLoadingData(false)
+      }
     }
   }, [dataUserSession.address])
 

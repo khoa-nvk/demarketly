@@ -10246,13 +10246,9 @@ a.text-dark:focus {
     align-items: center;
 }
 
-.content-modal-connect-wallet-wrapper {
-    min-width: 400px;
-    min-height: 100px;
-}
-
 .ReactModal__Overlay {
-    z-index: 1000;
+    z-index: 10000;
+    background-color: rgb(0 0 0 / 75%)!important;
 }
 
 @-webkit-keyframes progress-bar-stripes {
@@ -10295,6 +10291,49 @@ a.text-dark:focus {
     font-size: 22px;
     background-color: aliceblue;
     color: black;
+}
+
+.content-modal-connect-wallet-wrapper {
+    min-width: 450px;
+    min-height: 100px;
+}
+
+.content-modal-connect-wallet-wrapper .header-modal .title {
+    color: #fff;
+    font-size: 22px;
+}
+
+.loading-scan-wallet {
+    width: 30px;
+    margin: auto;
+}
+
+.scan-wallet-wrapper {
+    padding: 30px 0px;
+}
+
+.scan-wallet-wrapper .item-wallet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #ffffff38;
+    padding: 10px 20px;
+}
+
+.scan-wallet-wrapper .item-wallet .logo-wallet {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.scan-wallet-wrapper .item-wallet .name-wallet {
+    width: 50%;
+    font-size: 20px;
+    color: white;
+}
+
+.scan-wallet-wrapper .item-wallet .btn-connect {
+    width: calc(50% - 50px);
+    text-align: right;
 }
 
 @keyframes action {
