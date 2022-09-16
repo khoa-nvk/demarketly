@@ -12,12 +12,12 @@ export default function ListProduct() {
   console.log('data user session', dataUserSession)
 
   useEffect(() => {
-   
+
   }, [])
 
   useEffect(() => {
     if (dataUserSession.contractInstance) {
-     getTotalProductCreated()
+      getTotalProductCreated()
     }
   }, [dataUserSession.contractInstance])
 
@@ -38,14 +38,16 @@ export default function ListProduct() {
       let listProductDetail: any = []
 
       values.forEach((item_value, index) => {
-        let obj = item_value.decodedResult
-        obj.urlBuy = '/detail-product/' + item_value.decodedResult.id
-        listProductDetail.push(obj)
+        if (item_value.decodedResult.is_active) {
+          let obj = item_value.decodedResult
+          obj.urlBuy = '/detail-product/' + item_value.decodedResult.id
+          listProductDetail.push(obj)
+        }
       })
 
       console.log('listAllProductDetailFinal', listProductDetail);
 
-    
+
       templateListProduct = listProductDetail
       let temp = toObject(listProductDetail)
       setTemplateListProduct(temp)
@@ -82,7 +84,7 @@ export default function ListProduct() {
                       <img src={item.img} alt="Image" />
                     </Link>
                     <span className="item-popularity">
-                      {(Number(item.price)/(10**18)).toFixed(2)} AE
+                      {(Number(item.price) / (10 ** 18)).toFixed(2)} AE
                     </span>
 
                   </div>
