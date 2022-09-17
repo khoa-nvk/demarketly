@@ -99,9 +99,8 @@ const Page: NextPageWithLayout = () => {
             Swal.fire({
                 icon: 'error',
                 title: 'Have error when create coupon!',
-                text: '',
+                text: error,
                 showConfirmButton: true
-            }).then((result) => {
             })
         }
     }
