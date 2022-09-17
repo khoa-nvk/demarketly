@@ -182,12 +182,55 @@ describe('DeMarketly contract', () => {
         const createProduct = await contract.methods.create_product(PRODUCT_ID_1, "name", 2000000000000000000, "description", "image", true, {onAccount: ownerAccount});
         const buyProduct = await contract.methods.buy_product(PRODUCT_ID_1, false, "" , {onAccount: nonOwnerAccount, amount: 2000000000000000000});       
         const addReview = await contract.methods.add_review(PRODUCT_ID_1,"good product", 5, {onAccount: nonOwnerAccount})
-        // const createCoupon = await contract.methods.create_coupon(PRODUCT_ID_1,COUPON_OFF_1AE,1, COUPON_OFF_1AE_VALUE, {onAccount: ownerAccount})
-        // const updateCoupon = await contract.methods.update_coupon(PRODUCT_ID_1,COUPON_OFF_1AE,10, COUPON_OFF_1AE_VALUE, {onAccount: ownerAccount})
-        // // console.log(createCoupon)
         assert.equal(addReview.decodedResult.product_id, PRODUCT_ID_1)
     });
 
-    // add review fail because of non-exist product
+    it(`add review fail because of non-exist product`, async() => {
+        const createProduct = await contract.methods.create_product(PRODUCT_ID_1, "name", 2000000000000000000, "description", "image", true, {onAccount: ownerAccount});
+        const buyProduct = await contract.methods.buy_product(PRODUCT_ID_1, false, "" , {onAccount: nonOwnerAccount, amount: 2000000000000000000});       
+        await assertNode.rejects(contract.methods.add_review(PRODUCT_ID_2,"good product", 5, {onAccount: nonOwnerAccount}), (err) => {
+            assert.include(err.message, "Product with this id is not exist");
+            return true; 
+        });
+    });
+
+    it(`add review fail because of in-active product`, async() => {
+        const createProduct = await contract.methods.create_product(PRODUCT_ID_1, "name", 2000000000000000000, "description", "image", true, {onAccount: ownerAccount});
+        const buyProduct = await contract.methods.buy_product(PRODUCT_ID_1, false, "" , {onAccount: nonOwnerAccount, amount: 2000000000000000000});       
+        const updateProduct = await contract.methods.update_product(PRODUCT_ID_1, "name 2", 100000, "description", "image", false, {onAccount: ownerAccount})
+        await assertNode.rejects(contract.methods.add_review(PRODUCT_ID_1,"good product", 5, {onAccount: nonOwnerAccount}), (err) => {
+            assert.include(err.message, "Product is in-active");
+            return true; 
+        });
+    });
+
+    it(`add review fail because self-review product`, async() => {
+        const createProduct = await contract.methods.create_product(PRODUCT_ID_1, "name", 2000000000000000000, "description", "image", true, {onAccount: ownerAccount});
+        const buyProduct = await contract.methods.buy_product(PRODUCT_ID_1, false, "" , {onAccount: nonOwnerAccount, amount: 2000000000000000000});       
+        await assertNode.rejects(contract.methods.add_review(PRODUCT_ID_1,"good product", 5, {onAccount: ownerAccount}), (err) => {
+            assert.include(err.message, "You can't review your own product");
+            return true; 
+        });
+    });
+
+    it(`add review fail because not a customer`, async() => {
+        const createProduct = await contract.methods.create_product(PRODUCT_ID_1, "name", 2000000000000000000, "description", "image", true, {onAccount: ownerAccount});
+        // const buyProduct = await contract.methods.buy_product(PRODUCT_ID_1, false, "" , {onAccount: nonOwnerAccount, amount: 2000000000000000000});       
+        await assertNode.rejects(contract.methods.add_review(PRODUCT_ID_1,"good product", 5, {onAccount: nonOwnerAccount}), (err) => {
+            assert.include(err.message, "Maps: Key does not exist");
+            return true; 
+        });
+    });
+
+    it(`add review fail because review twice`, async() => {
+        const createProduct = await contract.methods.create_product(PRODUCT_ID_1, "name", 2000000000000000000, "description", "image", true, {onAccount: ownerAccount});
+        const buyProduct = await contract.methods.buy_product(PRODUCT_ID_1, false, "" , {onAccount: nonOwnerAccount, amount: 2000000000000000000});       
+        const addReview = await contract.methods.add_review(PRODUCT_ID_1,"good product", 5, {onAccount: nonOwnerAccount})
+        await assertNode.rejects(contract.methods.add_review(PRODUCT_ID_1,"good product", 5, {onAccount: nonOwnerAccount}), (err) => {
+            assert.include(err.message, "You already reviewd this product");
+            return true; 
+        });
+    });
+
 
 });
