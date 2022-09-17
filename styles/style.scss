@@ -3660,8 +3660,13 @@ select {
     margin-bottom: 25px;
     padding: 20px;
     .seller-img {
-        width: 110px;
+        width: 80px;
         position: relative;
+        img {
+            object-fit: contain;
+            width: 80px;
+            height: 60px;
+        }
         .seller-badge {
             position: absolute;
             bottom: 11px;
@@ -3680,18 +3685,16 @@ select {
         }
     }
     .seller-info {
-        width: calc(100% - 150px);
+        width: calc(100% - 120px);
         margin-left: 25px;
-        h3 {
+        .t-1 {
             font-size: 22px;
-            margin: 0 0 5px;
-            a {
-                color: $clr_white;
-            }
+            color: #43B4A0;
+            font-weight: bold;
         }
-        p {
-            margin: 0;
-            color: $clr_offwhite;
+        .t-2 {
+            font-size: 22px;
+            color: white;
         }
     }
     &:hover {

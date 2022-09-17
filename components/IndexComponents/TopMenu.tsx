@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Logo from '../styles/images/logo.png'
 
-export default function Sidebar() {
+export default function TopMenu() {
   return (
 
     <div>
