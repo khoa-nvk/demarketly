@@ -143,7 +143,7 @@ payable contract DeMarketly =
             product_id = product_id,
             code = code,
             seller = current_product.seller }
-
+        require(( Map.lookup(new_coupon_key,state.coupons) == None) , "This coupon for this product is already exist")
         let new_coupon = {
             code = code,
             product_id = product_id,
