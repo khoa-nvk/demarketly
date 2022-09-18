@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useEffect, useState } from "react";
 import { useAeternity } from "../../providers/AeternityProvider";
 import LoadingData from '../LoadingData';
-
+import ReactStars from "react-star-rating-component";
 
 export default function ListProduct() {
 
@@ -45,15 +45,49 @@ export default function ListProduct() {
         }
       })
 
-      console.log('listAllProductDetailFinal', listProductDetail);
 
 
-      templateListProduct = listProductDetail
-      let temp = toObject(listProductDetail)
-      setTemplateListProduct(temp)
+      getAllReviewOfAllProduct(listProductDetail)
+
     });
 
     setLoadingData(false)
+  }
+
+  const getAllReviewOfAllProduct = (listProduct: any) => {
+    let listPromise: any[] = []
+    listProduct.forEach((item: any) => {
+      listPromise.push(dataUserSession.contractInstance.methods.get_reviews(item.id))
+    })
+
+    Promise.all(listPromise).then((values) => {
+      let listProductDetailFinal: any = []
+
+      values.forEach((item_value, index) => {
+        let data = listProduct[index]
+
+        let avarageStar = 0
+        let totalStar = 0
+        item_value.decodedResult.forEach((item_review: any) => {
+          totalStar += Number(item_review.star)
+        })
+        if (item_value.decodedResult.length > 0 && totalStar != 0) {
+          avarageStar = parseInt(totalStar / item_value.decodedResult.length)
+        }
+
+        data.listReview = item_value.decodedResult
+        data.avarageStar = avarageStar
+
+        listProductDetailFinal.push(data)
+      })
+
+      console.log('listProductDetailFinal', listProductDetailFinal);
+
+      templateListProduct = listProductDetailFinal
+      let temp = toObject(listProductDetailFinal)
+      setTemplateListProduct(temp)
+
+    });
   }
 
   const toObject = (data: object) => {
@@ -94,6 +128,19 @@ export default function ListProduct() {
                         {item.name}
                       </div>
                     </Link>
+                    <div className='d-flex justify-content-between mb-2'>
+                      <ReactStars name={'rateprod' + id} editing={false} starCount={5} value={Number(item.avarageStar)} starColor={'#ffd700'}></ReactStars>
+                      {item.listReview.length > 1 ? (
+                        <div style={{ color: '#3d8360' }}>
+                          {item.listReview.length} reviews
+                        </div>
+                      ) : (
+                        <div style={{ color: '#3d8360' }}>
+                          {item.listReview.length} review
+                        </div>
+                      )}
+
+                    </div>
                     <Link href={item.urlBuy}>
                       <button type="button" className="btn style5" data-bs-toggle="modal" data-bs-target="#placeBid">View Detail</button>
                     </Link>
