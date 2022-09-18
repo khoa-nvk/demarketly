@@ -33,11 +33,16 @@ const Page: NextPageWithLayout = () => {
 
               <h3>Contract</h3>
 
-              <p>We&#39;re transparent about DeMarketly. You can find the contract code of DeMarketly at&nbsp;</p>
+              <p>We&#39;re transparent about DeMarketly. You can find the contract code of DeMarketly at&nbsp;
+
+                <a style={{ color: '#3d8360', fontWeight: 'bold' }} href='https://github.com/khoa-nvk/demarketly/blob/main/contracts/DeMarketly.aes' target={'_blank'}>Here</a>
+              </p>
+
+
 
               <h3>Contact</h3>
 
-              <p>For business inquiries, please contact email <a href="mailto:hello@demarketly.com?subject=Hello%20DeMarketly">hello@DeMarketly.com</a></p>
+              <p>For business inquiries, please contact email <a style={{ color: '#3d8360', fontWeight: 'bold' }} href="mailto:hello@demarketly.com?subject=Hello%20DeMarketly">hello@DeMarketly.com</a></p>
 
 
             </div>
@@ -45,7 +50,7 @@ const Page: NextPageWithLayout = () => {
 
           <div className='col-lg-6'>
             <h1 className='text-center mb-4'>
-            DeMarketly walkthrough video
+              DeMarketly walkthrough video
             </h1>
             <iframe width="560" height="315" src="https://www.youtube.com/embed/fK57ESoE5sE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
