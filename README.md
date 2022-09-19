@@ -17,6 +17,7 @@ DeMarketly will be FREE forever, no commission
 - Seller analytics
 
 ## Quick Start
+
 Clone the Demarketly git repo 
 https://github.com/khoa-nvk/demarketly
 
@@ -27,6 +28,25 @@ Install the dependencies
 Then run the project 
 
 `yarn dev`
+
+## Unit test Smart Contract 
+
+Please read [Unit Testing](https://github.com/aeternity/aeproject/blob/main/docs/cli/test.md) from AEProject first. 
+
+First, install the AEProject or
+
+`npm install -g @aeternity/aeproject`
+
+Then, `cd test` folder 
+
+Start the env by 
+
+`aeproject env`
+
+Finally, perform unit tests by 
+
+`aeproject test`
+
 
 ## Screenshots 
 
