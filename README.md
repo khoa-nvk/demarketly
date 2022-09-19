@@ -16,6 +16,17 @@ DeMarketly will be FREE forever, no commission
 - Review product
 - Seller analytics
 
+## Quick Start
+Clone the Demarketly git repo 
+https://github.com/khoa-nvk/demarketly
+
+Install the dependencies
+
+`yarn install` or `npm install`
+
+Then run the project 
+
+`yarn dev`
 
 ## Screenshots 
 
