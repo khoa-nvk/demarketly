@@ -1,0 +1,35 @@
+{
+    "name": "@types/argon2-browser",
+    "version": "1.18.1",
+    "description": "TypeScript definitions for argon2-browser",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/argon2-browser",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Ivan Gabriele",
+            "url": "https://github.com/ivangabriele",
+            "githubUsername": "ivangabriele"
+        },
+        {
+            "name": "Brendan Early",
+            "url": "https://github.com/mymindstorm",
+            "githubUsername": "mymindstorm"
+        },
+        {
+            "name": "Jeremy Forsythe",
+            "url": "https://github.com/jdforsythe",
+            "githubUsername": "jdforsythe"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/argon2-browser"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "8673e3e4d5172857a077757e8a923051463026c9d2ee661122c21012ddc56839",
+    "typeScriptVersion": "3.6"
+}

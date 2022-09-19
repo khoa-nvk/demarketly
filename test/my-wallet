@@ -1,0 +1,21 @@
+{
+    "name": "my-wallet",
+    "version": 1,
+    "public_key": "ak_22ai3pWXQvHTQaLVzH8dVPzVnEgBXvRDVzQ7XgPKX3SLyjkpmG",
+    "id": "b81fc50f-3662-4871-bdb6-757f597aac81",
+    "crypto": {
+        "secret_type": "ed25519",
+        "symmetric_alg": "xsalsa20-poly1305",
+        "ciphertext": "53028bd21462a96a5df3c690c9116e4fdf4c5e2bfdff2c4b0b7b4afc3f6b5464ee80e43e48b7107374d4a3793eb4318bc31663e3c5a88c175afd18b0c7272bec700f9b5cd28936d5743fc7611d811e4e",
+        "cipher_params": {
+            "nonce": "c64a299ffde655c67ca67855f2c2afbd0d159189ad749628"
+        },
+        "kdf": "argon2id",
+        "kdf_params": {
+            "memlimit_kib": 65536,
+            "opslimit": 3,
+            "parallelism": 1,
+            "salt": "3101216638d91e90b3d7ebca79151c52"
+        }
+    }
+}
