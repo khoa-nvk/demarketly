@@ -2,12 +2,24 @@
 
 include "String.aes"
 
+contract interface IAEX9Minimal =
+    record allowance_accounts = { from_account: address, for_account: address }
+    record meta_info = { name : string , symbol : string , decimals : int }
+    entrypoint meta_info: () => meta_info
+    entrypoint total_supply: () => int
+    entrypoint balance: (address) => option(int)
+    entrypoint allowance: (allowance_accounts) => option(int)
+    stateful entrypoint transfer: (address, int) => unit
+    stateful entrypoint create_allowance: (address, int) => unit
+    stateful entrypoint transfer_allowance: ( address, address, int) => unit
+
 payable contract DeMarketly =
 
     record state =
         { index : int
         , total_product_sale: int
         , total_sale: int
+        , total_sale_in_token: int
         , products  : map(string, product)
         , product_list: list(string)
         , products_by_seller: map(address, list(string)) 
@@ -16,9 +28,14 @@ payable contract DeMarketly =
         , buyers: map(address, list(purchased_info))  // one buyers has bought many products 
         , buyer_addresses: map(string,list(address)) // one product is bought by many buyers
         , reviews: map(string, list(review)) // one product has many reviews 
-        , my_reviews: map(address,list(review)) // one user reviews many product
+        , my_reviews: map(address,list(review)) // one user reviews many product, 
+        , token_by_seller_settings: map(address,token_management)    
         } 
     
+    record token_management = {
+        token_address: string,
+        is_added_lp: bool }
+
     record coupon_key = {
         product_id: string,
         code: string,
@@ -35,6 +52,7 @@ payable contract DeMarketly =
         number_no: int,
         name: string,
         price: int,
+        price_in_token: int,
         description: string,
         img: string,
         is_active: bool,
@@ -44,12 +62,14 @@ payable contract DeMarketly =
     record purchased_info = {
         product_id: string,
         origin_price: int,
-        profit_price: int }
+        profit_price: int, 
+        has_token: bool }
 
     record coupon = {
         code: string,
         product_id: string,
         discount_amount: int, 
+        discount_amount_in_token: int,
         allowed_uses: int, // if allowed_uses = 0 => coupon is invalid
         seller: address 
          }
@@ -68,10 +88,19 @@ payable contract DeMarketly =
             my_reviews = {},
             index = 1 ,
             total_sale = 0,
-            total_product_sale = 0
+            total_product_sale = 0, 
+            total_sale_in_token = 0,
+            token_by_seller_settings = {}
             }
+            
+    public stateful entrypoint update_token_by_seller_settings(token_address: string, is_added_lp: bool) : token_management =  
+        let new_token_management : token_management = {
+            token_address = token_address,
+            is_added_lp = is_added_lp }
+        put(state{ token_by_seller_settings[Call.caller] = new_token_management })  
+        new_token_management
 
-    payable stateful entrypoint buy_product(id: string, has_coupon: bool, coupon_code: string) : unit =
+    payable stateful entrypoint buy_product(id: string, has_coupon: bool, coupon_code: string, has_token: bool, token_interface: IAEX9Minimal) : unit =
         // let attos_unit :int = 1000000000000000000
         require(( Map.lookup(id,state.products) != None) , "Product with this id is not exist")
         let product = state.products[id]
@@ -81,11 +110,16 @@ payable contract DeMarketly =
         
         // buyer has coupon
         if (has_coupon == false)
-            require(Call.value >= product.price , "You don't have enough attos to buy this product")
             // update statistics
-            put(state{total_sale = (state.total_sale + product.price)})
-            update_after_buying(product, Call.caller, product.price)  
-            Chain.spend(product.seller, product.price)
+            if (has_token)
+                put(state{total_sale = (state.total_sale_in_token + product.price_in_token)})
+                update_after_buying(product, Call.caller, product.price_in_token, true)  
+                token_interface.transfer(product.seller, product.price_in_token)
+            else 
+                require(Call.value >= product.price , "You don't have enough attos to buy this product")
+                put(state{total_sale = (state.total_sale + product.price)})
+                update_after_buying(product, Call.caller, product.price, false)  
+                Chain.spend(product.seller, product.price)
         else
         // buyer send AE to seller without coupon 
             let current_coupon_key = {
@@ -95,29 +129,38 @@ payable contract DeMarketly =
             require( (Map.lookup(current_coupon_key,state.coupons) != None), "This coupon is not exist" )
             let coupon = state.coupons[current_coupon_key]
             require( (coupon.allowed_uses > 0 ), "This coupon's allowed uses is 0" )
-            let new_discount_price = product.price - coupon.discount_amount
+            let new_discount_price = if (has_token) product.price_in_token - coupon.discount_amount_in_token else product.price - coupon.discount_amount
             let updated_coupon = {
                 code = coupon.code,
                 product_id = coupon.product_id,
                 discount_amount = coupon.discount_amount,
+                discount_amount_in_token = coupon.discount_amount_in_token,
                 allowed_uses = coupon.allowed_uses - 1, 
                 seller = coupon.seller }
             put(state{ coupons[current_coupon_key] = updated_coupon })   
-            require(Call.value >= new_discount_price, "You don't have enough attos to buy this product")         
-            // update statistics
-            put(state{total_sale = (state.total_sale + new_discount_price)})
-            update_after_buying(product, Call.caller, new_discount_price)
-            Chain.spend(product.seller, new_discount_price)
+            
+            if (has_token) 
+                // update statistics
+                put(state{total_sale_in_token = (state.total_sale_in_token + new_discount_price)})
+                update_after_buying(product, Call.caller, new_discount_price, false)
+                token_interface.transfer(product.seller, new_discount_price)
+            else 
+                require(Call.value >= new_discount_price, "You don't have enough attos to buy this product")         
+                // update statistics
+                put(state{total_sale = (state.total_sale + new_discount_price)})
+                update_after_buying(product, Call.caller, new_discount_price, false)
+                Chain.spend(product.seller, new_discount_price)
             
 
-    stateful function update_after_buying(product: product, caller_address: address, purchased_price: int) = 
+    stateful function update_after_buying(product: product, caller_address: address, purchased_price: int, has_token: bool) = 
         // update statistic
         put(state{total_product_sale = (state.total_product_sale + 1)})
         // add this product to buyer purchased products
         let new_info = { 
             product_id = product.id,
-            origin_price = product.price, 
-            profit_price = purchased_price }
+            origin_price = if(has_token) product.price else product.price_in_token, 
+            profit_price = purchased_price, 
+            has_token = has_token }
         
         // update list of purchased products
         if (Map.lookup(caller_address,state.buyers) == None)
@@ -135,7 +178,7 @@ payable contract DeMarketly =
             let new_buyer_addresses = List.insert_at(List.length(current_buyer_addresses) - 1, caller_address ,current_buyer_addresses)
             put(state{buyer_addresses[product.id] = new_buyer_addresses })        
             
-    public stateful entrypoint create_coupon(product_id: string, code: string, allowed_uses: int, discount_amount: int) : coupon_key = 
+    public stateful entrypoint create_coupon(product_id: string, code: string, allowed_uses: int, discount_amount: int, discount_amount_in_token: int) : coupon_key = 
         require(( Map.lookup(product_id,state.products) != None) , "Product with this id is not exist")
         let current_product = state.products[product_id]
         require ( current_product.seller == Call.caller, "You are not the product's owner" )
@@ -148,6 +191,7 @@ payable contract DeMarketly =
             code = code,
             product_id = product_id,
             discount_amount = discount_amount, 
+            discount_amount_in_token = discount_amount_in_token,
             allowed_uses = allowed_uses,
             seller = Call.caller }
         put(state{coupons[new_coupon_key] = new_coupon})
@@ -161,7 +205,7 @@ payable contract DeMarketly =
             put(state{coupons_by_seller[Call.caller] = new_list })        
         new_coupon_key
     
-    public stateful entrypoint update_coupon(product_id: string, code: string, allowed_uses: int, discount_amount: int) : coupon_key = 
+    public stateful entrypoint update_coupon(product_id: string, code: string, allowed_uses: int, discount_amount: int, discount_amount_in_token: int) : coupon_key = 
         let current_product = state.products[product_id]
         let current_coupon_key = {
             product_id = product_id,
@@ -175,18 +219,20 @@ payable contract DeMarketly =
             code = current_coupon.code,
             product_id = product_id,
             discount_amount = discount_amount, 
+            discount_amount_in_token = discount_amount_in_token,
             allowed_uses = allowed_uses, 
             seller = current_coupon.seller
             }
         put(state{coupons[current_coupon_key] = updated_coupon})
         current_coupon_key
 
-    public stateful entrypoint create_product(id: string, name: string, price: int, description: string, img: string, is_active: bool) : string = 
+    public stateful entrypoint create_product(id: string, name: string, price: int, description: string, img: string, is_active: bool, price_in_token: int) : string = 
         require( (Map.lookup(id,state.products) == None) , "Product's id is exist")
         let new_product : product = {
             id = id,
             name = name,
             price = price,
+            price_in_token = price_in_token,
             number_no = state.index,
             seller = Call.caller,
             description = description,
@@ -218,7 +264,7 @@ payable contract DeMarketly =
         
         new_product.id
 
-    public stateful entrypoint update_product(id: string, name: string, price: int, description: string, img: string, is_active: bool) : string = 
+    public stateful entrypoint update_product(id: string, name: string, price: int, description: string, img: string, is_active: bool, price_in_token: int) : string = 
         let current_product = state.products[id] 
         require(( Map.lookup(id,state.products) != None) , "Product with this id is not exist")
         require ( current_product.seller == Call.caller, "You are not the product's owner" )
@@ -226,6 +272,7 @@ payable contract DeMarketly =
             id = id,
             name = name,
             price = price,
+            price_in_token = price_in_token,
             number_no = current_product.number_no,
             seller = current_product.seller,
             description = description,
@@ -266,6 +313,9 @@ payable contract DeMarketly =
 
         new_review
 
+    // get token by seller settings 
+    entrypoint get_token_by_seller_settings(seller: address) : token_management =  
+        state.token_by_seller_settings[seller]
     // get all review from a user
     entrypoint get_all_products() : list(string) =  
         state.product_list 
